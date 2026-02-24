@@ -1,0 +1,55 @@
+import type { AnalysisSummary } from '../types';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+
+export const exportToJSON = (result: AnalysisSummary) => {
+  const dataStr = JSON.stringify(result, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+  
+  const exportFileDefaultName = `benford-analysis-${result.name.replace(/\s+/g, '-').toLowerCase()}.json`;
+  
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+};
+
+export const exportToPDF = async (elementId: string, filename: string) => {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-base').trim() || '#09090b',
+    scale: 2,
+    logging: false,
+    useCORS: true
+  });
+  
+  const imgData = canvas.toDataURL('image/png');
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'px',
+    format: [canvas.width, canvas.height]
+  });
+
+  pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+  pdf.save(`${filename}.pdf`);
+};
+
+export const exportToPNG = async (elementId: string, filename: string) => {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+
+  const canvas = await html2canvas(element, {
+    backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-base').trim() || '#09090b',
+    scale: 2,
+    logging: false,
+    useCORS: true
+  });
+  
+  const imgData = canvas.toDataURL('image/png');
+  const link = document.createElement('a');
+  link.href = imgData;
+  link.download = `${filename}.png`;
+  link.click();
+};

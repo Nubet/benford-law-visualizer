@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: oklch(0.97 0.03 145);
+  --color-brand-100: oklch(0.94 0.06 145);
+  --color-brand-200: oklch(0.88 0.12 145);
+  --color-brand-300: oklch(0.82 0.15 145);
+  --color-brand-400: oklch(0.76 0.17 145);
+  --color-brand-500: oklch(0.70 0.17 145);
+  --color-brand-600: oklch(0.62 0.15 145);
+  --color-brand-700: oklch(0.53 0.12 145);
+  --color-brand-800: oklch(0.44 0.10 145);
+  --color-brand-900: oklch(0.35 0.08 145);
+
+  --color-anomaly-low: oklch(0.7 0.18 166);
+  --color-anomaly-medium: oklch(0.7 0.18 70);
+  --color-anomaly-high: oklch(0.7 0.18 25);
+  --color-anomaly-info: oklch(0.7 0.18 250);
+
+  --shadow-premium: 0 4px 24px -4px rgba(0, 0, 0, 0.04);
+  --shadow-glass: inset 0 0 0 transparent;
+
+  --font-size-tiny: 0.6875rem;
+  --font-size-caption: 0.8125rem;
+  --font-size-secondary: 0.9375rem;
+  --font-size-body: 1.0625rem;
+  --font-size-header: 1.25rem;
+  --font-size-title: 1.75rem;
+  --font-size-large: 2.125rem;
+}
+
+@layer base {
+  :root {
+    --bg-base: oklch(0.97 0 0);
+    --bg-surface: oklch(1 0 0);
+    --bg-card: oklch(1 0 0);
+    --bg-overlay: oklch(0.95 0 0);
+
+    --border-low: oklch(0.92 0 0);
+    --border-high: oklch(0.85 0 0);
+
+    --text-primary: oklch(0.15 0 0);
+    --text-secondary: oklch(0.45 0 0);
+    --text-tertiary: oklch(0.60 0 0);
+
+    --brand-primary: var(--color-brand-400);
+    --brand-hover: var(--color-brand-500);
+    --brand-surface: var(--color-brand-50);
+    --brand-text: oklch(0.15 0 0);
+
+    --font-sans: "Satoshi", "Geist", "Inter", system-ui, -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", "Geist Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-base: oklch(0.12 0.01 286);
+      --bg-surface: oklch(0.18 0.01 286);
+      --bg-card: oklch(0.24 0.02 286);
+      --bg-overlay: oklch(0.3 0.02 286);
+
+      --border-low: oklch(0.25 0.02 286);
+      --border-high: oklch(0.35 0.02 286);
+
+      --text-primary: oklch(0.98 0 0);
+      --text-secondary: oklch(0.7 0.01 286);
+      --text-tertiary: oklch(0.45 0.01 286);
+
+      --brand-primary: var(--color-brand-400);
+      --brand-hover: var(--color-brand-300);
+      --brand-surface: oklch(0.2 0.05 166);
+      --brand-text: oklch(0.1 0.05 166);
+    }
+  }
+
+  .dark {
+    --bg-base: oklch(0.12 0.01 286);
+    --bg-surface: oklch(0.18 0.01 286);
+    --bg-card: oklch(0.24 0.02 286);
+    --bg-overlay: oklch(0.3 0.02 286);
+
+    --border-low: oklch(0.25 0.02 286);
+    --border-high: oklch(0.35 0.02 286);
+
+    --text-primary: oklch(0.98 0 0);
+    --text-secondary: oklch(0.7 0.01 286);
+    --text-tertiary: oklch(0.45 0.01 286);
+
+    --brand-primary: var(--color-brand-400);
+    --brand-hover: var(--color-brand-300);
+    --brand-surface: oklch(0.2 0.05 166);
+    --brand-text: oklch(0.1 0.05 166);
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-body);
+    line-height: 1.4;
+    margin: 0;
+    min-width: 320px;
+    min-height: 100dvh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+    margin: 0;
+    color: var(--text-primary);
+  }
+}
+
+@layer components {
+  .text-display {
+    @apply text-[var(--font-size-large)] md:text-[4rem] font-bold tracking-tighter leading-[0.9];
+  }
+
+  .glass-panel {
+    background-color: var(--bg-card);
+    @apply rounded-[1.5rem] md:rounded-[2rem];
+    border: 1px solid var(--border-low);
+    box-shadow: var(--shadow-premium);
+  }
+
+  .accent-gradient {
+    background-image: linear-gradient(to bottom right, var(--brand-primary), var(--color-brand-600));
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-high);
+  @apply rounded-full hover:bg-[var(--text-tertiary)] transition-colors;
+}
