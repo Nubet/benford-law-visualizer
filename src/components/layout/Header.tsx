@@ -4,6 +4,7 @@ import { FileCode, Image as ImageIcon, FilePdf } from '@phosphor-icons/react';
 import { exportToJSON, exportToPDF, exportToPNG } from '../../services/reportGenerator';
 import { clsx } from 'clsx';
 import { LazyMotion, domAnimation, m } from 'framer-motion';
+import { EXPORT_ELEMENT_ID } from '../../constants/export';
 
 export const Header: React.FC = () => {
   const { analysisResult, currentDataset, sensitivityLevel, negativeValueHandling } = useApp();
@@ -20,7 +21,7 @@ export const Header: React.FC = () => {
   };
 
   const handleExportPNG = () => {
-    if (analysisResult) exportToPNG('root', `benford-summary-${analysisResult.name.replace(/\s+/g, '-')}`);
+    if (analysisResult) exportToPNG(EXPORT_ELEMENT_ID, `benford-summary-${analysisResult.name.replace(/\s+/g, '-')}`);
   };
 
   return (

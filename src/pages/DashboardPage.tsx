@@ -17,6 +17,7 @@ import {
 import { clsx } from 'clsx';
 import { LazyMotion, domAnimation, m, AnimatePresence } from 'framer-motion';
 import { getSensitivityDeviation } from '../utils/sensitivity';
+import { EXPORT_ELEMENT_ID } from '../constants/export';
 
 const DistributionChart = lazy(() => import('../components/charts/DistributionChart'));
 
@@ -70,24 +71,26 @@ export const DashboardPage: React.FC = () => {
     <LazyMotion features={domAnimation}>
       <div className="space-y-10">
         <DashboardHeader />
-        <StatsGrid analysisResult={analysisResult} />
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          <Suspense fallback={<div className="lg:col-span-8 glass-panel p-10" /> }>
-            <DistributionChart
-              chartData={chartData}
-              selectedDigit={selectedDigit}
-              onBarClick={handleBarClick}
+        <div id={EXPORT_ELEMENT_ID}>
+          <StatsGrid analysisResult={analysisResult} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-10">
+            <Suspense fallback={<div className="lg:col-span-8 glass-panel p-10" /> }>
+              <DistributionChart
+                chartData={chartData}
+                selectedDigit={selectedDigit}
+                onBarClick={handleBarClick}
+                results={analysisResult.results}
+                sensitivityThresholdPercent={sensitivityThresholdPercent}
+                sensitivityDeviation={sensitivityDeviation}
+              />
+            </Suspense>
+            <BreakdownPanel
               results={analysisResult.results}
-              sensitivityThresholdPercent={sensitivityThresholdPercent}
+              selectedDigit={selectedDigit}
               sensitivityDeviation={sensitivityDeviation}
+              onSelectDigit={(digit) => setSelectedDigit(digit === selectedDigit ? null : digit)}
             />
-          </Suspense>
-          <BreakdownPanel
-            results={analysisResult.results}
-            selectedDigit={selectedDigit}
-            sensitivityDeviation={sensitivityDeviation}
-            onSelectDigit={(digit) => setSelectedDigit(digit === selectedDigit ? null : digit)}
-          />
+          </div>
         </div>
         <DrilldownSection
           selectedDigit={selectedDigit}
@@ -112,12 +115,12 @@ const DashboardEmptyState: React.FC<{ onUpload: () => void }> = ({ onUpload }) =
       animate={{ x: 0, opacity: 1 }}
       className="max-w-2xl"
     >
-      <div className="w-20 h-20 bg-[var(--brand-primary)]/10 rounded-3xl flex items-center justify-center mb-10 border border-[var(--brand-primary)]/20">
-        <Database size={40} weight="duotone" className="text-[var(--brand-primary)]" />
+      <div className="w-20 h-20 bg-(--brand-primary)/10 rounded-3xl flex items-center justify-center mb-10 border border-(--brand-primary)/20">
+        <Database size={40} weight="duotone" className="text-(--brand-primary)" />
       </div>
-      <h2 className="text-large font-bold text-[var(--text-primary)] mb-6 tracking-tighter leading-none">
+      <h2 className="text-large font-bold text-(--text-primary) mb-6 tracking-tighter leading-none">
         No active <br />
-        <span className="text-[var(--brand-primary)]">analysis data.</span>
+        <span className="text-(--brand-primary)">analysis data.</span>
       </h2>
       <p className="text-secondary text-(--text-secondary) max-w-md mb-10 leading-relaxed">
         Upload a dataset to start inspecting for anomalies using Benford's Law Algorithm.
@@ -126,7 +129,7 @@ const DashboardEmptyState: React.FC<{ onUpload: () => void }> = ({ onUpload }) =
         whileHover={{ scale: 1.05, x: 10 }}
         whileTap={{ scale: 0.95 }}
         onClick={onUpload}
-        className="group flex items-center gap-4 px-10 py-5 bg-[var(--text-primary)] text-[var(--bg-base)] rounded-2xl font-semibold transition-all shadow-premium"
+        className="group flex items-center gap-4 px-10 py-5 bg-(--text-primary) text-(--bg-base) rounded-2xl font-semibold transition-all shadow-premium"
       >
         <span>Analyze File</span>
         <ArrowUpRight size={24} weight="bold" className="group-hover:rotate-45 transition-transform" />
@@ -138,14 +141,14 @@ const DashboardEmptyState: React.FC<{ onUpload: () => void }> = ({ onUpload }) =
 const DashboardHeader = () => (
   <header className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-8 mt-4">
     <div>
-      <h2 className="text-title font-bold text-[var(--text-primary)]">Smart spending alerts</h2>
+      <h2 className="text-title font-bold text-(--text-primary)">Smart spending alerts</h2>
     </div>
     <div className="flex items-center gap-4">
       <div className="relative">
-        <input type="text" placeholder="Search..." className="pl-10 pr-4 py-2 bg-[var(--bg-card)] rounded-full text-caption border border-[var(--border-low)] focus:outline-none" />
+        <input type="text" placeholder="Search..." className="pl-10 pr-4 py-2 bg-(--bg-card) rounded-full text-caption border border-(--border-low) focus:outline-none" />
         <svg className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
       </div>
-      <select className="px-4 py-2 bg-[var(--bg-card)] rounded-full text-caption border border-[var(--border-low)] focus:outline-none">
+      <select className="px-4 py-2 bg-(--bg-card) rounded-full text-caption border border-(--border-low) focus:outline-none">
         <option>Sort by: Urgency</option>
       </select>
     </div>
@@ -199,8 +202,8 @@ const BreakdownPanel: React.FC<{
     <div className="glass-panel p-8 flex-1 flex flex-col relative overflow-hidden">
       <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-zinc-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="flex items-center justify-between mb-8">
-        <h3 className="text-header font-bold text-[var(--text-primary)] tracking-tight">Digit Breakdown</h3>
-        <Rows size={20} weight="duotone" className="text-[var(--text-tertiary)]" />
+        <h3 className="text-header font-bold text-(--text-primary) tracking-tight">Digit Breakdown</h3>
+        <Rows size={20} weight="duotone" className="text-(--text-tertiary)" />
       </div>
 
       <div className="space-y-3 flex-1">
@@ -212,31 +215,31 @@ const BreakdownPanel: React.FC<{
             className={clsx(
               "w-full group text-left transition-all p-3 rounded-2xl border flex items-center gap-4",
               selectedDigit === res.digit
-                ? "bg-[var(--brand-primary)]/10 border-[var(--brand-primary)]/30"
-                : "bg-[var(--bg-base)]/30 border-transparent hover:border-[var(--border-low)]"
+                ? "bg-(--brand-primary)/10 border-(--brand-primary)/30"
+                : "bg-(--bg-base)/30 border-transparent hover:border-(--border-low)"
             )}
           >
             <span className={clsx(
               "w-10 h-10 rounded-xl flex items-center justify-center font-bold text-caption transition-all shadow-sm",
-              selectedDigit === res.digit ? "bg-[var(--brand-primary)] text-[var(--brand-text)]" : "bg-[var(--bg-surface)] text-(--text-secondary) group-hover:text-[var(--text-primary)]"
+              selectedDigit === res.digit ? "bg-(--brand-primary) text-(--brand-text)" : "bg-(--bg-surface) text-(--text-secondary) group-hover:text-(--text-primary)"
             )}>
               {res.digit}
             </span>
 
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-tiny font-bold text-[var(--text-tertiary)] uppercase tracking-tighter">
+                <span className="text-tiny font-bold text-(--text-tertiary) uppercase tracking-tighter">
                   {res.observedCount.toLocaleString()} Samples
                 </span>
-                <span className="text-caption font-bold text-[var(--text-primary)]">{(res.observedFreq * 100).toFixed(1)}%</span>
+                <span className="text-caption font-bold text-(--text-primary)">{(res.observedFreq * 100).toFixed(1)}%</span>
               </div>
-              <div className="w-full h-1 bg-[var(--bg-base)]/50 rounded-full overflow-hidden">
+              <div className="w-full h-1 bg-(--bg-base)/50 rounded-full overflow-hidden">
                 <m.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(res.observedFreq / 0.4) * 100}%` }}
                   className={clsx(
                     "h-full rounded-full",
-                    Math.abs(res.difference) > sensitivityDeviation ? "bg-[var(--color-anomaly-high)]" : "bg-[var(--color-anomaly-low)]"
+                    Math.abs(res.difference) > sensitivityDeviation ? "bg-anomaly-high" : "bg-anomaly-low"
                   )}
                 />
               </div>
@@ -244,7 +247,7 @@ const BreakdownPanel: React.FC<{
 
             <div className={clsx(
               "text-tiny font-bold w-12 text-right",
-              res.difference > 0 ? "text-[var(--color-anomaly-high)]" : "text-[var(--color-anomaly-low)]"
+              res.difference > 0 ? "text-anomaly-high" : "text-anomaly-low"
             )}>
               {res.difference > 0 ? '+' : ''}{(res.difference * 100).toFixed(1)}%
             </div>
@@ -252,7 +255,7 @@ const BreakdownPanel: React.FC<{
         ))}
       </div>
 
-      <div className="mt-8 flex items-center justify-center gap-2 text-tiny font-bold text-[var(--text-tertiary)] uppercase tracking-[0.2em]">
+      <div className="mt-8 flex items-center justify-center gap-2 text-tiny font-bold text-(--text-tertiary) uppercase tracking-[0.2em]">
         <Info size={14} weight="bold" />
         <span>Select digit for granular view</span>
       </div>
@@ -279,21 +282,21 @@ const DrilldownSection: React.FC<{
         exit={{ opacity: 0, y: 20 }}
         className="glass-panel overflow-hidden relative"
       >
-        <div className="p-10 border-b border-[var(--border-low)] bg-[var(--bg-base)]/50 flex items-center justify-between">
+        <div className="p-10 border-b border-(--border-low) bg-(--bg-base)/50 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <div className="w-14 h-14 bg-[var(--brand-primary)] rounded-2xl flex items-center justify-center text-[var(--brand-text)] shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)]">
+            <div className="w-14 h-14 bg-(--brand-primary) rounded-2xl flex items-center justify-center text-(--brand-text) shadow-[0_10px_20px_-5px_rgba(16,185,129,0.3)]">
               <Funnel size={28} weight="bold" />
             </div>
             <div>
-              <h3 className="text-header font-bold text-[var(--text-primary)] tracking-tight">Granular Drilldown: Digit {selectedDigit}</h3>
-              <p className="text-caption text-[var(--text-tertiary)] font-medium">Isolating {drilldownData.length} records matching the leading digit {selectedDigit}.</p>
+              <h3 className="text-header font-bold text-(--text-primary) tracking-tight">Granular Drilldown: Digit {selectedDigit}</h3>
+              <p className="text-caption text-(--text-tertiary) font-medium">Isolating {drilldownData.length} records matching the leading digit {selectedDigit}.</p>
             </div>
           </div>
           <m.button
             whileHover={{ rotate: 90, scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="p-3 bg-[var(--bg-overlay)] hover:bg-[var(--bg-surface)] rounded-2xl text-[var(--text-tertiary)] hover:text-[var(--text-primary)] transition-all border border-[var(--border-low)]"
+            className="p-3 bg-(--bg-overlay) hover:bg-(--bg-surface) rounded-2xl text-(--text-tertiary) hover:text-(--text-primary) transition-all border border-(--border-low)"
           >
             <X size={24} weight="bold" />
           </m.button>
@@ -302,23 +305,23 @@ const DrilldownSection: React.FC<{
         <div className="overflow-x-auto">
           <table className="w-full text-left text-secondary">
             <thead>
-              <tr className="bg-[var(--bg-base)]/40">
+              <tr className="bg-(--bg-base)/40">
                 {columns.slice(0, 8).map(col => (
-                  <th key={col} className="px-8 py-5 font-bold text-[var(--text-tertiary)] uppercase tracking-[0.2em] text-tiny">
+                  <th key={col} className="px-8 py-5 font-bold text-(--text-tertiary) uppercase tracking-[0.2em] text-tiny">
                     {col}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-[var(--border-low)]">
+            <tbody className="divide-y divide-(--border-low)">
               {rows.map((row) => {
                 const rowKey = columns.slice(0, 8).map(col => String(row[col])).join('|');
                 return (
-                <tr key={rowKey} className="hover:bg-[var(--bg-surface)]/20 transition-colors group">
+                <tr key={rowKey} className="hover:bg-(--bg-surface)/20 transition-colors group">
                   {columns.slice(0, 8).map(col => (
                     <td key={col} className={clsx(
                       "px-8 py-5 text-(--text-secondary) font-mono text-caption transition-colors",
-                      col === highlightColumn && "text-[var(--text-primary)] font-bold bg-[var(--brand-primary)]/[0.02]"
+                      col === highlightColumn && "text-(--text-primary) font-bold bg-(--brand-primary)/2"
                     )}>
                       {String(row[col])}
                     </td>
@@ -331,9 +334,9 @@ const DrilldownSection: React.FC<{
         </div>
 
         {totalPages > 1 && (
-          <div className="px-10 py-6 border-t border-[var(--border-low)] flex items-center justify-between bg-[var(--bg-base)]/10">
-            <span className="text-tiny text-[var(--text-tertiary)] font-bold uppercase tracking-[0.2em]">
-              Fragment {page + 1} <span className="text-[var(--text-tertiary)]/50">/</span> {totalPages}
+          <div className="px-10 py-6 border-t border-(--border-low) flex items-center justify-between bg-(--bg-base)/10">
+            <span className="text-tiny text-(--text-tertiary) font-bold uppercase tracking-[0.2em]">
+              Fragment {page + 1} <span className="text-(--text-tertiary)/50">/</span> {totalPages}
             </span>
             <div className="flex gap-3">
               <m.button
@@ -341,7 +344,7 @@ const DrilldownSection: React.FC<{
                 whileTap={page !== 0 ? { scale: 0.95 } : {}}
                 disabled={page === 0}
                 onClick={() => onPageChange(p => p - 1)}
-                className="p-3 bg-[var(--bg-overlay)] hover:bg-[var(--bg-surface)] disabled:opacity-20 rounded-xl text-[var(--text-primary)] transition-all border border-[var(--border-low)] shadow-sm"
+                className="p-3 bg-(--bg-overlay) hover:bg-(--bg-surface) disabled:opacity-20 rounded-xl text-(--text-primary) transition-all border border-(--border-low) shadow-sm"
               >
                 <CaretLeft size={20} weight="bold" />
               </m.button>
@@ -350,7 +353,7 @@ const DrilldownSection: React.FC<{
                 whileTap={page !== totalPages - 1 ? { scale: 0.95 } : {}}
                 disabled={page === totalPages - 1}
                 onClick={() => onPageChange(p => p + 1)}
-                className="p-3 bg-[var(--bg-overlay)] hover:bg-[var(--bg-surface)] disabled:opacity-20 rounded-xl text-[var(--text-primary)] transition-all border border-[var(--border-low)] shadow-sm"
+                className="p-3 bg-(--bg-overlay) hover:bg-(--bg-surface) disabled:opacity-20 rounded-xl text-(--text-primary) transition-all border border-(--border-low) shadow-sm"
               >
                 <CaretRight size={20} weight="bold" />
               </m.button>
@@ -392,18 +395,18 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, icon: Icon,
         delay
       }}
       whileHover={{ y: -5 }}
-      className="glass-panel p-6 relative group border-transparent hover:border-[var(--brand-primary)]/20 transition-all duration-500"
+      className="glass-panel p-6 relative group border-transparent hover:border-(--brand-primary)/20 transition-all duration-500"
     >
       <div className="text-caption font-semibold text-(--text-secondary) mb-2">{title}</div>
       <div className="flex items-end justify-between mb-6">
-        <div className="text-large font-bold text-[var(--text-primary)] tracking-tighter font-mono leading-none">{value}</div>
+        <div className="text-large font-bold text-(--text-primary) tracking-tighter font-mono leading-none">{value}</div>
         <div className={clsx('flex items-center gap-1 text-tiny font-bold px-2 py-1 rounded-full', colorStyles[color])}>
           <Icon size={12} weight="bold" />
           <span>{subtitle}</span>
         </div>
       </div>
-      <div className="mt-auto pt-4 border-t border-[var(--border-low)]">
-        <span className="text-tiny font-bold text-[var(--text-primary)] flex items-center gap-2 group-hover:text-[var(--brand-primary)] transition-colors cursor-pointer">
+      <div className="mt-auto pt-4 border-t border-(--border-low)">
+        <span className="text-tiny font-bold text-(--text-primary) flex items-center gap-2 group-hover:text-(--brand-primary) transition-colors cursor-pointer">
           View details <ArrowUpRight size={14} weight="bold" />
         </span>
       </div>
