@@ -128,7 +128,7 @@ export const SettingsPage: React.FC = () => {
             </div>
             <div className="pt-2 flex justify-center">
               <a 
-                href="https://github.com" 
+                href="https://github.com/Nubet/benford-law-visualizer"
                 target="_blank" 
                 rel="noreferrer"
                 className="flex items-center gap-2 text-(--text-tertiary) hover:text-(--text-primary) transition-colors"
