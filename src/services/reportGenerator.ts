@@ -1,9 +1,48 @@
-import type { AnalysisSummary } from '../types';
+import type { AnalysisSummary, Dataset, SensitivityLevel, NegativeValueHandling } from '../types';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
 
-export const exportToJSON = (result: AnalysisSummary) => {
-  const dataStr = JSON.stringify(result, null, 2);
+export interface ExportData {
+  version: string;
+  exportDate: string;
+  analysis: AnalysisSummary;
+  settings: {
+    sensitivityLevel: SensitivityLevel;
+    negativeValueHandling: NegativeValueHandling;
+  };
+  dataset: {
+    name: string;
+    totalRecords: number;
+    columns: string[];
+    numericColumns: string[];
+    analyzedColumn: string;
+  };
+}
+
+export const exportToJSON = (
+  result: AnalysisSummary,
+  currentDataset?: Dataset | null,
+  sensitivityLevel?: SensitivityLevel,
+  negativeValueHandling?: NegativeValueHandling
+) => {
+  const exportData: ExportData = {
+    version: '1.0.0',
+    exportDate: new Date().toISOString(),
+    analysis: result,
+    settings: {
+      sensitivityLevel: sensitivityLevel || 'standard',
+      negativeValueHandling: negativeValueHandling || 'absolute',
+    },
+    dataset: {
+      name: currentDataset?.name || result.name,
+      totalRecords: currentDataset?.data.length || result.totalCount,
+      columns: currentDataset?.columns || [],
+      numericColumns: currentDataset?.numericColumns || [],
+      analyzedColumn: result.columnName,
+    },
+  };
+
+  const dataStr = JSON.stringify(exportData, null, 2);
   const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
   
   const exportFileDefaultName = `benford-analysis-${result.name.replace(/\s+/g, '-').toLowerCase()}.json`;

@@ -6,11 +6,13 @@ import { clsx } from 'clsx';
 import { LazyMotion, domAnimation, m } from 'framer-motion';
 
 export const Header: React.FC = () => {
-  const { analysisResult, currentDataset } = useApp();
+  const { analysisResult, currentDataset, sensitivityLevel, negativeValueHandling } = useApp();
   const activeName = currentDataset?.name || analysisResult?.name || 'New Analysis';
 
   const handleExportJSON = () => {
-    if (analysisResult) exportToJSON(analysisResult);
+    if (analysisResult) {
+      exportToJSON(analysisResult, currentDataset, sensitivityLevel, negativeValueHandling);
+    }
   };
 
   const handleExportPDF = () => {
