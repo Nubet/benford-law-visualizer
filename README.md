@@ -1,73 +1,175 @@
-# React + TypeScript + Vite
+# Benford Law Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Web app for detecting suspicious numeric patterns using Benford's Law.
 
-Currently, two official plugins are available:
+App lets you upload a dataset, choose a numeric column, run first-digit distribution analysis, compare observed values with the theoretical Benford distribution, and export the result as JSON, PNG, or PDF.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Live demo: [https://nubet.github.io/benford-law-visualizer/](https://nubet.github.io/benford-law-visualizer/)
 
-## React Compiler
+## What you get
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Interactive Benford guide**  
+  Learn what Benford's Law is, why first digits follow a logarithmic distribution, and test single values in the probability engine.
 
-## Expanding the ESLint configuration
+- **Dataset upload**  
+  Import local data files directly in the browser.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Supported file formats**  
+  Analyze datasets from:
+  - CSV
+  - XLS / XLSX
+  - JSON
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Column-based analysis flow**  
+  Select a numeric column from the uploaded dataset and preview raw rows before running the analysis.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- **Benford distribution dashboard**  
+  Compare observed first-digit frequencies against the theoretical Benford distribution.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Anomaly scoring**  
+  Review deviation score, chi-square metric, analyzed record count, and risk classification.
+
+- **Digit breakdown**  
+  Inspect each leading digit separately with sample count, observed percentage, and deviation.
+
+- **Built-in sample datasets**  
+  Try the app without uploading data using predefined scenarios:
+  - World Cities Population
+  - Corporate Expenses
+  - Manipulated Data
+  - Fibonacci Sequence
+
+- **Analysis history**  
+  Previous results are stored locally in the browser and can be revisited later.
+
+- **Dataset comparison**  
+  Compare two saved analysis results from history and inspect distribution differences.
+
+- **Export tools**  
+  Export analysis results as:
+  - JSON
+  - PNG
+  - PDF
+
+- **Configurable analysis settings**  
+  Adjust sensitivity level and choose how negative values should be handled.
+
+## How the analysis works
+
+The app extracts the first significant digit from every valid numeric value in the selected column.
+
+It then compares the observed digit frequency with Benford's theoretical distribution:
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+text
+P(d) = log10(1 + 1 / d)
 ```
+where `d` is a digit from `1` to `9`.
+
+The analysis produces:
+
+- observed count per digit,
+- observed frequency per digit,
+- theoretical Benford frequency,
+- deviation between observed and expected values,
+- chi-square score,
+- global deviation score,
+- anomaly risk level.
+
+## Data and privacy
+
+All parsing and analysis happens locally in the browser.
+
+Uploaded datasets are not sent to any backend service. The app stores only analysis history and settings in browser `localStorage`.
+
+## Tech stack
+
+- **Framework**: React + Vite
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+
+- **Charts**: Recharts
+- **File parsing**:
+  - PapaParse for CSV
+  - SheetJS / XLSX for Excel files
+- **Exports**:
+  - jsPDF
+  - html2canvas
+  - modern-screenshot
+- **Animations**: Framer Motion
+- **Deployment**: GitHub Pages
+
+## Project structure
+
+- `src/pages/` - app screens and routes
+- `src/components/` - shared layout, UI, and chart components
+- `src/services/` - Benford analysis, file parsing, mock datasets, and export logic
+- `src/store/` - global app state and local persistence
+- `src/types/` - TypeScript domain types
+- `src/utils/` - analysis settings helpers and data handling utilities
+- `docs/images/` - README screenshots
+- `public/` - static assets
+
+## Quick start
+
+### Requirements
+
+- Node.js
+- npm
+
+### 1) Install dependencies
+```
+bash
+npm install
+```
+### 2) Start development server
+```
+bash
+npm run dev
+```
+Then open the local URL shown in the terminal.
+
+### 3) Build production version
+```
+bash
+npm run build
+```
+### 4) Preview production build locally
+```
+bash
+npm run preview
+```
+## Deployment to GitHub Pages
+
+The project is configured for GitHub Pages deployment with `gh-pages`.
+
+### Deploy
+```
+bash
+npm run deploy
+```
+This runs the production build first and publishes the `dist/` directory to GitHub Pages.
+
+### Deployment URL
+```
+text
+https://nubet.github.io/benford-law-visualizer/
+```
+## Available scripts
+
+- `npm run dev` - start Vite development server
+- `npm run build` - run TypeScript build and create production bundle
+- `npm run preview` - preview production build locally
+- `npm run deploy` - build and publish to GitHub Pages
+
+## Notes
+
+- Benford's Law is most useful for naturally occurring, multi-scale numeric datasets. It should be treated as an anomaly signal, not as final proof of fraud.
+
+## Screenshots
+
+| Screen | Preview                                                                            | Caption |
+| --- |------------------------------------------------------------------------------------| --- |
+| Guide | <img src="docs/images/guide.png" width="900" alt="Guide screen" />                 | Interactive explanation of Benford's Law and first-digit probability. |
+| Upload data | <img src="docs/images/upload-data.png" width="900" alt="Upload data screen" />     | Upload CSV, Excel, or JSON files, or start from a sample dataset. |
+| Select data | <img src="docs/images/uploadata2.png" width="900" alt="Column selection screen" /> | Choose the numeric column and preview records before analysis. |
+| Analysis result | <img src="docs/images/analysis-result.png" width="900" alt="Analysis dashboard" /> | Distribution chart, anomaly metrics, and per-digit breakdown. |
