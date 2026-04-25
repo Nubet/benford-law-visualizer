@@ -169,7 +169,7 @@ https://nubet.github.io/benford-law-visualizer/
 
 | Screen | Preview                                                                            | Caption |
 | --- |------------------------------------------------------------------------------------| --- |
-| Guide | <img src="docs/images/guide.png" width="900" alt="Guide screen" />                 | Interactive explanation of Benford's Law and first-digit probability. |
-| Upload data | <img src="docs/images/upload-data.png" width="900" alt="Upload data screen" />     | Upload CSV, Excel, or JSON files, or start from a sample dataset. |
-| Select data | <img src="docs/images/uploadata2.png" width="900" alt="Column selection screen" /> | Choose the numeric column and preview records before analysis. |
-| Analysis result | <img src="docs/images/analysis-result.png" width="900" alt="Analysis dashboard" /> | Distribution chart, anomaly metrics, and per-digit breakdown. |
+| Guide | <img src="docs/images/guide.png" alt="Guide screen" />                 | Interactive explanation of Benford's Law and first-digit probability. |
+| Upload data | <img src="docs/images/upload-data.png" alt="Upload data screen" />     | Upload CSV, Excel, or JSON files, or start from a sample dataset. |
+| Select data | <img src="docs/images/uploadata2.png" alt="Column selection screen" /> | Choose the numeric column and preview records before analysis. |
+| Analysis result | <img src="docs/images/analysis-result.png" alt="Analysis dashboard" /> | Distribution chart, anomaly metrics, and per-digit breakdown. |
